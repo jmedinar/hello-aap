@@ -1,0 +1,7 @@
+---
+- name: Hello AAP
+  hosts: all
+  tasks:
+    - name: Say Hi
+      ansible.builtin.debug:
+        msg: "Hi!"
