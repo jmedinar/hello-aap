@@ -4,7 +4,12 @@
   gather_facts: true 
   #hosts: '*.home.lab'
   tasks:
+
+    - name: Print all facts
+      ansible.builtin.debug:
+        var: ansible_facts
+        
     - name: Say Hi
       ansible.builtin.debug:
         msg: "Hi!"
-      when: ansible_facts["os_name"] == "RedHat"
+      #when: ansible_facts["os_name"] == "RedHat"
