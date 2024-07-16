@@ -1,6 +1,7 @@
 ---
 - name: Hello AAP
   hosts: all
+  gather_facts: true 
   #hosts: '*.home.lab'
   tasks:
     - name: Say Hi
