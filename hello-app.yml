@@ -1,7 +1,7 @@
 ---
 - name: Hello AAP
   #hosts: all
-  hosts: *.home.lab
+  hosts: '*.home.lab'
   tasks:
     - name: Say Hi
       ansible.builtin.debug:
