@@ -5,9 +5,15 @@
   #hosts: '*.home.lab'
   tasks:
 
-    #- name: Print all facts
-    #  ansible.builtin.debug:
-    #    var: ansible_facts
+    - name: Limit fact gathering
+      ansible.builtin.setup:
+        gather_subset:
+          - hardware
+      when: ansible_os_family == "RedHat"
+          
+    - name: Print all facts
+      ansible.builtin.debug:
+        var: ansible_facts
         
     - name: Say Hi
       ansible.builtin.debug:
