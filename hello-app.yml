@@ -1,8 +1,9 @@
 ---
 - name: Hello AAP
-  #hosts: all
-  hosts: '*.home.lab'
+  hosts: all
+  #hosts: '*.home.lab'
   tasks:
     - name: Say Hi
       ansible.builtin.debug:
         msg: "Hi!"
+      when ansible_facts["os_name"] == "RedHat"
