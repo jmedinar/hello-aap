@@ -1,0 +1,73 @@
+---
+- name: Setting up an apache server and website
+  hosts: all
+  gather_facts: true
+  become: false
+
+  vars:
+    author: "Juan Medina"
+    email: "jumedina@redhat.com"  
+    allowed_environments:
+      - development
+      - production
+    environment: "{{ environment_cli | default(omit) }}"
+
+  pre_tasks:
+
+    - name: Assert 'environment_cli' is set and valid
+      ansible.builtin.assert:
+        that:
+          - environment is defined
+          - environment in allowed_environments
+        fail_msg: |
+          FATAL ERROR: The required variable 'environment_cli' is missing or invalid.
+
+          Usage Instructions:
+            
+            You must specify the target platform via --extra-vars:
+
+              -e environment_cli=<TYPE>
+
+          Allowed Options (Usage):
+          - production: Executes in production environments
+          - development: Executes in development environments
+
+          Current value provided: {{ environment }}
+
+    - name: Open required services in the firewall
+      firewalld:
+        service: "{{ item }}"
+        state: enabled
+        immediate: yes
+        permanent: yes
+      loop:
+        - http
+        - https
+
+  tasks:
+
+    - name: Install HTTPD
+      ansible.builtin.dnf:
+        name: httpd
+        state: latest
+      notify: Start HTTPD
+
+    - name: Insert the author and email to the index.html
+      ansible.builtin.template:
+        src: index.html.j2
+        dest: /var/www/html/index.html
+      notify: Restart HTTPD
+
+  handlers:
+
+    - name: Start HTTPD
+      ansible.builtin.service:
+        name: httpd
+        state: started
+        enabled: true
+
+    - name: Restart HTTPD
+      ansible.builtin.service:
+        name: httpd
+        state: reloaded
+...
